@@ -19,29 +19,26 @@ passport.use(
     {
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
-      callbackURL: "/auth/google/callback"
+      callbackURL: "/auth/google/callback",
+      proxy: true
     },
     //     accessToken => {
     //       console.log(accessToken);
     //     }
     //   )
     // );
-    (accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
       // existingUser is an instance record, if null then nothing found
-      User.findOne({ googleId: profile.id }).then(existingUser => {
-        if (existingUser) {
-          // we already have a record with
-          done(null, existingUser);
-        } else {
-          new User({ googleId: profile.id }) // create a mongoose model's instance
-            .save()
-            .then(user => done(null, user));
-        }
-      });
-
-      //   console.log("access token", accessToken);
-      //   console.log("refresh token", refreshToken);
-      //   console.log("profiles", profile);
+      const existingUser = await User.findOne({ googleId: profile.id });
+      if (existingUser) {
+        // we already have a record with
+        done(null, existingUser);
+      } else {
+        // dont have a user record with this ID, make a new record!
+        const user = await new User({ googleId: profile.id }) // create a mongoose model's instance
+          .save();
+        done(null, user);
+      }
     }
   )
 );
