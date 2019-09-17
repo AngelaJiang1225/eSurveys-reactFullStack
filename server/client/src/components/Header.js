@@ -1,26 +1,48 @@
 import React, { Component } from "react";
-
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import Payments from "./Payments";
 class Header extends Component {
+  renderContent() {
+    switch (this.props.auth) {
+      case null:
+        return "Still deciding";
+      case false:
+        return (
+          <li>
+            <a href="/auth/google">Login With Google</a>
+          </li>
+        );
+      default:
+        return [
+          <li key="1">
+            <Payments />
+          </li>,
+          <li key="3" style={{ margin: "0 10px" }}>
+            Credits: {this.props.auth.credits}
+          </li>,
+          <li key="2">
+            <a href="/api/logout">Logout</a>
+          </li>
+        ];
+    }
+  }
   render() {
+    console.log(this.props);
     return (
-      // <nav>
-      //   <div className="nav-wrapper" />
-      //   <a className="left brand-logo">Emaily</a>
-      //   <ul id="nav-mobile" class="right hide-on-med-and-down">
-      //     <li>
-      //       <a>Login With Google</a>
-      //     </li>
-      //   </ul>
-      // </nav>
       <nav>
-        <div class="nav-wrapper">
-          <a href="#" class="brand-logo left">
-            Emaily
-          </a>
-          <ul>
-            <li href="#" class="tab right">
+        <div className="nav-wrapper">
+          <Link
+            to={this.props.user ? "/surveys" : "/"}
+            className="brand-logo left"
+          >
+            eSurvey
+          </Link>
+          <ul className="tab right">
+            {/* <li href="/auth/google">
               <a>Log In With Google</a>
-            </li>
+            </li> */}
+            {this.renderContent()}
             {/* id="nav-mobile" class="right hide-on-med-and-down" */}
           </ul>
           {/* <ul id="nav-mobile" class="right hide-on-med-and-down">
@@ -33,5 +55,7 @@ class Header extends Component {
     );
   }
 }
-
-export default Header;
+function mapStateToProps({ auth }) {
+  return { auth };
+}
+export default connect(mapStateToProps)(Header);

@@ -42,3 +42,6 @@ passport.use(
     }
   )
 );
+//   console.log("access token", accessToken);
+//   console.log("refresh token", refreshToken);
+//   console.log("profiles", profile);

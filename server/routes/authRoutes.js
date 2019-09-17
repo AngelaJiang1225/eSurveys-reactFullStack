@@ -1,5 +1,5 @@
 const passport = require("passport");
-require("../services/passport");
+//require("../services/passport");
 
 module.exports = app => {
   // app is express object
@@ -10,13 +10,20 @@ module.exports = app => {
     })
   );
 
-  app.get("/auth/google/callback", passport.authenticate("google"));
+  app.get(
+    "/auth/google/callback",
+    passport.authenticate("google"),
+    (req, res) => {
+      res.redirect("/surveys");
+    }
+  );
+
   app.get("/api/current_user", (req, res) => {
     res.send(req.session);
     // session contains info that is stored in the cookies
   });
   app.get("/api/logout", (req, res) => {
     req.logout();
-    res.send(req.user);
+    res.redirect("/");
   });
 };
