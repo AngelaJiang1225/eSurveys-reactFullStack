@@ -19,7 +19,7 @@ module.exports = app => {
   );
 
   app.get("/api/current_user", (req, res) => {
-    res.send(req.session);
+    res.send(req.user);
     // session contains info that is stored in the cookies
   });
   app.get("/api/logout", (req, res) => {
